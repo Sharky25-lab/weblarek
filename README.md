@@ -179,12 +179,17 @@ type ApiOrderResponse = {
  
 Конструктор не принимает параметров.
  
-Поля класса:  
-`protected items: IProduct[]` — массив всех товаров каталога.  
-`protected selectedItem: IProduct | null` — товар, открытый для детального просмотра. `null`, если ни один товар не выбран.
+Поля класса: 
+
+| Поле | Тип | Описание |
+|---|---|---|
+| `items` | `IProduct[]` | Массив всех товаров каталога |
+| `selectedItem` | `IProduct \| null` | Товар, открытый для детального просмотра; `null` если не выбран |
  
 Методы класса:
- 
+
+| Метод | Параметры | Возвращает | Описание |
+|---|---|---|---|
 | `setItems` | `items: IProduct[]` | `void` | Сохраняет массив товаров в модель |
 | `getItems` | — | `IProduct[]` | Возвращает весь массив товаров |
 | `getItem` | `id: string` | `IProduct \| undefined` | Возвращает товар по его id или `undefined`, если не найден |
@@ -203,6 +208,8 @@ type ApiOrderResponse = {
  
 Методы класса:
  
+| Метод | Параметры | Возвращает | Описание |
+|---|---|---|---|
 | `getItems` | — | `IProduct[]` | Возвращает текущее содержимое корзины |
 | `addItem` | `item: IProduct` | `void` | Добавляет товар в корзину |
 | `removeItem` | `item: IProduct` | `void` | Удаляет товар из корзины по `id` |
@@ -224,7 +231,9 @@ type ApiOrderResponse = {
 `protected phone: string` — номер телефона
  
 Методы класса:
- 
+
+| Метод | Параметры | Возвращает | Описание |
+|---|---|---|---|
 | `setPayment` | `value: TPayment` | `void` | Сохраняет способ оплаты |
 | `setAddress` | `value: string` | `void` | Сохраняет адрес доставки |
 | `setEmail` | `value: string` | `void` | Сохраняет email |
@@ -247,5 +256,7 @@ type ApiOrderResponse = {
  
 Методы класса:
  
-| `getProducts` | — | `Promise<{ total: number; items: IProduct[] }>` | GET-запрос на `/product/`. Возвращает объект с количеством и массивом товаров |
-| `createOrder` | `order: TOrderRequest` | `Promise<ApiOrderResponse>` | POST-запрос на `/order`. Отправляет данные заказа, возвращает подтверждение с id и суммой |
+| Метод | Параметры | Возвращает | Описание |
+|---|---|---|---|
+| `getProducts` | — | `Promise<{ total: number; items: IProduct[] }>` | Возвращает объект с количеством и массивом товаров |
+| `createOrder` | `order: TOrderRequest` | `Promise<ApiOrderResponse>` | Отправляет данные заказа, возвращает подтверждение с id и суммой |

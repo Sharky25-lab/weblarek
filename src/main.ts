@@ -8,8 +8,6 @@ import { Cart } from './components/Models/Cart';
 import { Buyer } from './components/Models/Buyer';
 import { WebLarekApi } from './components/Models/WebLarekApi';
 
-console.log('API_URL:', API_URL);
- 
 const catalogModel = new ProductCatalog();
 
 const cartModel = new Cart();
