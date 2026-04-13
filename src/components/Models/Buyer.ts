@@ -1,7 +1,7 @@
 import { IBuyer, TPayment, TValidationErrors } from '../../types/index';
  
 export class Buyer {
-  protected payment: TPayment = '' as TPayment;
+  protected payment: TPayment | null = null;
   protected email: string = '';
   protected phone: string = '';
   protected address: string = '';
@@ -32,7 +32,7 @@ export class Buyer {
   }
  
   clear(): void {
-    this.payment = '' as TPayment;
+    this.payment = null;
     this.address = '';
     this.email = '';
     this.phone = '';

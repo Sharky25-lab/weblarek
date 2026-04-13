@@ -121,10 +121,41 @@ interface IProduct {
  
 ```ts
 interface IBuyer {
-  payment: TPayment; // способ оплаты
+  payment: TPayment | null; // способ оплаты
   email: string;     // электронная почта
   phone: string;     // номер телефона
   address: string;   // адрес доставки
+}
+```
+
+### Интерфейс `IOrderRequest`
+ 
+Описывает объект, отправляемый на сервер при оформлении заказа. Наследует `IBuyer` полем списка id товаров и итоговой суммой.
+ 
+```ts
+export interface IOrderRequest extends IBuyer {
+  items: string[];
+  total: number;
+}
+```
+### Интерфейс `ApiOrderResponse`
+ 
+Описывает объект, возвращаемый сервером при успешном оформлении заказа.
+ 
+```ts
+interface ApiOrderResponse {
+  id: string;    // идентификатор созданного заказа
+  total: number; // подтверждённая сумма заказа
+}
+```
+### Интерфейс `ApiProductResponse`
+
+Описываает объект, возвращаемый с сервера при получении списка товаров
+
+```ts
+export interface ApiProductsResponse {
+  total: number;
+  items: IProduct[];
 }
 ```
  
@@ -141,34 +172,7 @@ type TPayment = 'online' | 'cash';
 Описывает объект с ошибками валидации. Присутствуют только те поля, в которых обнаружены ошибки. 
  
 ```ts
-type TValidationErrors = {
-  payment?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-}
-```
- 
-### Тип `TOrderRequest`
- 
-Описывает объект, отправляемый на сервер при оформлении заказа. Расширяет `IBuyer` полем списка id товаров и итоговой суммой.
- 
-```ts
-type TOrderRequest = IBuyer & {
-  items: string[]; // массив id выбранных товаров
-  total: number;   // итоговая сумма заказа
-}
-```
- 
-### Тип `ApiOrderResponse`
- 
-Описывает объект, возвращаемый сервером при успешном оформлении заказа.
- 
-```ts
-type ApiOrderResponse = {
-  id: string;    // идентификатор созданного заказа
-  total: number; // подтверждённая сумма заказа
-}
+type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
 ```
  
 ## Модели данных
@@ -225,7 +229,7 @@ type ApiOrderResponse = {
 Конструктор не принимает параметров.
  
 Поля класса: 
-`protected payment: TPayment` — способ оплаты (пустая строка до выбора)  
+`protected payment: TPayment | null = null` — способ оплаты (`null` до выбора способа оплаты)  
 `protected address: string` — адрес доставки 
 `protected email: string` — электронная почта  
 `protected phone: string` — номер телефона

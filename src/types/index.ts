@@ -15,32 +15,27 @@ export interface IProduct {
 }
 
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
 }
 
-export type TPayment = 'online' | 'cash';
-
-export type TValidationErrors = {
-  payment?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-}
-
-export type TOrderRequest = IBuyer & {
+export interface IOrderRequest extends IBuyer {
   items: string[];
   total: number;
 }
 
-export type ApiOrderResponse = {
+export interface ApiOrderResponse {
   id: string;
   total: number;
 }
 
-export type ApiProductsResponse = {
+export interface ApiProductsResponse {
   total: number;
   items: IProduct[];
 }
+
+export type TPayment = 'online' | 'cash';
+
+export type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
