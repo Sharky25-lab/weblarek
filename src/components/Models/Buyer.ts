@@ -1,25 +1,32 @@
 import { IBuyer, TPayment, TValidationErrors } from '../../types/index';
+import { IEvents } from '../base/Events';
  
 export class Buyer {
   protected payment: TPayment | null = null;
   protected email: string = '';
   protected phone: string = '';
   protected address: string = '';
+
+  constructor(protected events: IEvents) {}
  
   setPayment(value: TPayment): void {
     this.payment = value;
+    this.events.emit('buyer:changed', this.getData());
   }
  
   setAddress(value: string): void {
     this.address = value;
+    this.events.emit('buyer:changed', this.getData());
   }
  
   setEmail(value: string): void {
     this.email = value;
+    this.events.emit('buyer:changed', this.getData());
   }
  
   setPhone(value: string): void {
     this.phone = value;
+    this.events.emit('buyer:changed', this.getData());
   }
  
   getData(): IBuyer {

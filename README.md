@@ -264,3 +264,284 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
 |---|---|---|---|
 | `getProducts` | — | `Promise<{ total: number; items: IProduct[] }>` | Возвращает объект с количеством и массивом товаров |
 | `createOrder` | `order: TOrderRequest` | `Promise<ApiOrderResponse>` | Отправляет данные заказа, возвращает подтверждение с id и суммой |
+
+## Слой Представления (View)
+ 
+Все классы представления наследуют `Component<T>`. 
+ 
+### Класс `Page`
+ 
+Отвечает за главную страницу: галерею карточек и счётчик корзины.
+ 
+Конструктор: 
+`constructor(container: HTMLElement, events: IEvents)`
+ 
+Поля:
+ 
+| Поле | Тип | DOM-элемент |
+|---|---|---|
+| `_gallery` | `HTMLElement` | `.gallery` |
+| `_basketCounter` | `HTMLElement` | `.header__basket-counter` |
+| `_basketButton` | `HTMLButtonElement` | `.header__basket` |
+ 
+Сеттеры:
+ 
+| Сеттер | Тип | Описание |
+|---|---|---|
+| `catalogItems` | `HTMLElement[]` | Заменяет содержимое галереи |
+| `basketCount` | `number` | Обновляет счётчик |
+ 
+### Класс `Modal`
+ 
+Управляет модальным окном. 
+ 
+Конструктор: 
+`constructor(container: HTMLElement, events: IEvents)`
+ 
+Поля:
+ 
+| Поле | Тип | DOM-элемент |
+|---|---|---|
+| `_closeButton` | `HTMLButtonElement` | `.modal__close` |
+| `_content` | `HTMLElement` | `.modal__content` |
+ 
+Сеттеры:
+ 
+| Сеттер | Тип | Описание |
+|---|---|---|
+| `content` | `HTMLElement` | Подставляет контент внутрь |
+ 
+Методы:
+ 
+| Метод | Описание |
+|---|---|
+| `open()` | Добавляет `modal_active`, эмитит `modal:open` |
+| `close()` | Убирает `modal_active`, очищает контент, эмитит `modal:close` |
+| `render(data)` | Устанавливает контент и открывает окно |
+ 
+Генерируемые события:
+ 
+| Событие | Когда |
+|---|---|
+| `modal:open` | Открытие модального окна |
+| `modal:close` | Закрытие по крестику или клику вне окна |
+ 
+### Абстрактный класс `Card<T>`
+ 
+Содержит общий функционал для всех трёх вариантов карточки.
+ 
+Конструктор: 
+`constructor(container: HTMLElement)`
+ 
+Поля:
+ 
+| Поле | Тип | DOM-элемент |
+|---|---|---|
+| `id` | `string` | — (хранится в поле) |
+| `title` | `HTMLElement` | `.card__title` |
+| `price` | `HTMLElement` | `.card__price` |
+ 
+Сеттеры/геттеры: 
+`id`, `title`, `price`
+ 
+### Класс `CardCatalog` (наследует `Card`)
+ 
+Карточка товара в галерее каталога. 
+ 
+Конструктор: `constructor(container: HTMLElement, events: IEvents)`
+ 
+Дополнительные поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `image` | `.card__image` |
+| `category` | `.card__category` |
+ 
+Дополнительные сеттеры: 
+`image`, `category`
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `card:select` | `{ id: string }` | Клик по карточке |
+ 
+### Класс `CardPreview` (наследует `Card`)
+ 
+Карточка предпросмотра в модальном окне. 
+ 
+Конструктор: 
+`constructor(container: HTMLElement, events: IEvents)`
+ 
+Дополнительные поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `_image` | `.card__image` |
+| `_category` | `.card__category` |
+| `_description` | `.card__text` |
+| `_button` | `.card__button` |
+ 
+Дополнительные сеттеры: 
+`image`, `category`, `description`, `inBasket`, `price`
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `card:toBasket` | `{ id: string }` | Клик по кнопке «В корзину» / «Удалить из корзины» |
+ 
+### Класс `CardBasket` (наследует `Card`)
+ 
+Карточка товара в корзине. 
+ 
+Конструктор: `constructor(container: HTMLElement, events: IEvents)`
+ 
+Дополнительные поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `index` | `.basket__item-index` |
+| `deleteButton` | `.basket__item-delete` |
+ 
+Дополнительные сеттеры: `index`
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `basket:removeItem` | `{ id: string }` | Клик по кнопке удаления |
+ 
+### Класс `Basket`
+ 
+Компонент корзины. 
+ 
+Конструктор: `constructor(container: HTMLElement, events: IEvents)`
+ 
+Поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `list` | `.basket__list` |
+| `total` | `.basket__price` |
+| `orderButton` | `.basket__button` |
+ 
+Сеттеры:
+ 
+| Сеттер | Тип | Описание |
+|---|---|---|
+| `items` | `HTMLElement[]` | Заполняет список; при `length === 0` блокирует кнопку |
+| `total` | `number` | Обновляет итоговую сумму |
+ 
+Генерируемые события:
+ 
+| Событие | Когда |
+|---|---|
+| `basket:order` | Клик по кнопке «Оформить» |
+ 
+### Абстрактный класс `Form<T>`
+ 
+Конструктор: 
+`constructor(container: HTMLFormElement, events: IEvents)`
+ 
+Поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `submitButton` | `[type=submit]` |
+| `errorsContainer` | `.form__errors` |
+ 
+Сеттеры:
+ 
+| Сеттер | Тип | Описание |
+|---|---|---|
+| `valid` | `boolean` | Включает/выключает кнопку отправки |
+| `errors` | `string` | Отображает текст ошибок |
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `<n>:input` | `{ field, value }` | Изменение любого поля формы |
+| `<n>:submit` | — | Отправка формы |
+ 
+### Класс `OrderForm` (наследует `Form`)
+ 
+Форма шага 1: способ оплаты и адрес. 
+ 
+Дополнительные поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `onlineButton` | `[name=card]` |
+| `cashButton` | `[name=cash]` |
+| `addressInput` | `[name=address]` |
+ 
+Дополнительные сеттеры: 
+`payment` (управляет `button_alt-active`), `address`
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `order:input` | `{ field: 'payment', value }` | Клик по кнопке оплаты |
+| `order:input` | `{ field: 'address', value }` | Ввод в поле адреса |
+| `order:submit` | — | Кнопка «Далее» |
+ 
+### Класс `ContactsForm` (наследует `Form`)
+ 
+Форма шага 2: email и телефон. 
+ 
+Дополнительные поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `emailInput` | `[name=email]` |
+| `phoneInput` | `[name=phone]` |
+ 
+Дополнительные сеттеры: `email`, `phone`
+ 
+Генерируемые события:
+ 
+| Событие | Данные | Когда |
+|---|---|---|
+| `contacts:input` | `{ field, value }` | Ввод email или phone |
+| `contacts:submit` | — | Кнопка «Оплатить» |
+ 
+### Класс `Success`
+ 
+Экран успешного оформления заказа.
+ 
+Конструктор: `constructor(container: HTMLElement, events: IEvents)`
+ 
+Поля:
+ 
+| Поле | DOM-элемент |
+|---|---|
+| `description` | `.order-success__description` |
+| `closeButton` | `.order-success__close` |
+ 
+Сеттеры:
+ 
+| Сеттер | Тип | Описание |
+|---|---|---|
+| `total` | `number` | Выводит сумму списанных синапсов |
+ 
+Генерируемые события:
+ 
+| Событие | Когда |
+|---|---|
+| `success:close` | Клик «За новыми покупками!» |
+
+## Презентер
+ 
+Презентер реализован в `main.ts` как набор обработчиков событий без выделения в отдельный класс.
+ 
+Последовательность инициализации:
+ 
+1. Создаётся `EventEmitter`
+2. Создаются все модели (с передачей `events`)
+3. Клонируются HTML-шаблоны
+4. Создаются все View-компоненты
+5. Регистрируются обработчики событий
+6. `webLarekApi.getProducts()`, `catalogModel.setItems()`, `catalog:changed`, галерея
