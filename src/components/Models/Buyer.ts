@@ -43,6 +43,7 @@ export class Buyer {
     this.address = '';
     this.email = '';
     this.phone = '';
+    this.events.emit('buyer:changed', this.getData());
   }
  
   validate(): TValidationErrors {

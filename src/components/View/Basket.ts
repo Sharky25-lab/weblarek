@@ -25,9 +25,15 @@ export class Basket extends Component<IBasket> {
   }
 
   set items(value: HTMLElement[]) {
-    this.list.replaceChildren(...value);
+    if (value.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'Корзина пуста';
+        this.list.replaceChildren(empty);
+    } else {
+        this.list.replaceChildren(...value);
+    }
     this.orderButton.disabled = value.length === 0;
-  }
+}
 
   set total(value: number) {
     this._total.textContent = `${value} синапсов`;

@@ -269,27 +269,34 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
  
 Все классы представления наследуют `Component<T>`. 
  
-### Класс `Page`
+### Класс `Header`
  
-Отвечает за главную страницу: галерею карточек и счётчик корзины.
+Шапка страницы: кнопка корзины и счётчик товаров.
  
-Конструктор: 
-`constructor(container: HTMLElement, events: IEvents)`
+Конструктор: `constructor(container: HTMLElement, events: IEvents)`
  
 Поля:
  
-| Поле | Тип | DOM-элемент |
-|---|---|---|
-| `_gallery` | `HTMLElement` | `.gallery` |
-| `_basketCounter` | `HTMLElement` | `.header__basket-counter` |
-| `_basketButton` | `HTMLButtonElement` | `.header__basket` |
+| Поле | DOM-элемент |
+|---|---|
+| `_counter` | `.header__basket-counter` |
+| `_button` | `.header__basket` |
  
-Сеттеры:
+Сеттеры: `basketCount`
  
-| Сеттер | Тип | Описание |
-|---|---|---|
-| `catalogItems` | `HTMLElement[]` | Заменяет содержимое галереи |
-| `basketCount` | `number` | Обновляет счётчик |
+Генерируемые события:
+ 
+| Событие | Когда |
+|---|---|
+| `basket:open` | Клик по иконке корзины |
+ 
+### Класс `Gallery`
+ 
+Галерея карточек на главной странице.
+ 
+Конструктор: `constructor(container: HTMLElement)`
+ 
+Сеттеры: `items` — заменяет содержимое галереи переданным массивом элементов.
  
 ### Класс `Modal`
  
@@ -328,21 +335,18 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
  
 ### Абстрактный класс `Card<T>`
  
-Содержит общий функционал для всех трёх вариантов карточки.
+Общий функционал для всех трёх вариантов карточки.
  
-Конструктор: 
-`constructor(container: HTMLElement)`
+Конструктор: `constructor(container: HTMLElement)`
  
 Поля:
  
-| Поле | Тип | DOM-элемент |
-|---|---|---|
-| `id` | `string` | — (хранится в поле) |
-| `title` | `HTMLElement` | `.card__title` |
-| `price` | `HTMLElement` | `.card__price` |
+| Поле | DOM-элемент |
+|---|---|
+| `_title` | `.card__title` |
+| `_price` | `.card__price` |
  
-Сеттеры/геттеры: 
-`id`, `title`, `price`
+Сеттеры: `title`, `price`
  
 ### Класс `CardCatalog` (наследует `Card`)
  
@@ -414,7 +418,7 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
  
 ### Класс `Basket`
  
-Компонент корзины. 
+Компонент корзины.
  
 Конструктор: `constructor(container: HTMLElement, events: IEvents)`
  
@@ -423,15 +427,15 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
 | Поле | DOM-элемент |
 |---|---|
 | `list` | `.basket__list` |
-| `total` | `.basket__price` |
+| `_total` | `.basket__price` |
 | `orderButton` | `.basket__button` |
  
 Сеттеры:
  
-| Сеттер | Тип | Описание |
-|---|---|---|
-| `items` | `HTMLElement[]` | Заполняет список; при `length === 0` блокирует кнопку |
-| `total` | `number` | Обновляет итоговую сумму |
+| Сеттер | Описание |
+|---|---|
+| `items` | Заполняет список; при пустом массиве показывает «Корзина пуста» и блокирует кнопку |
+| `total` | Обновляет итоговую сумму |
  
 Генерируемые события:
  
@@ -439,7 +443,7 @@ type TValidationErrors = Partial<Record<keyof IBuyer, string>>;
 |---|---|
 | `basket:order` | Клик по кнопке «Оформить» |
  
-### Абстрактный класс `Form<T>`
+### Абстрактный класс `FormBase<T>`
  
 Конструктор: 
 `constructor(container: HTMLFormElement, events: IEvents)`
